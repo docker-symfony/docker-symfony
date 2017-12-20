@@ -1,0 +1,28 @@
+FROM php:7.1-fpm
+
+#zlib1g-dev is required by php-zip extension
+RUN apt-get update; \
+    apt-get install -y zlib1g-dev wget
+#php-zip is required by composer to download compressed packages
+RUN docker-php-ext-install zip
+
+ADD ./deploy/install-composer.sh ./install-composer.sh
+RUN chmod +x ./install-composer.sh; \
+    ./install-composer.sh; \
+    mv ./composer.phar /usr/bin/composer
+
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
+ENV APP_SECRET=67d829bf61dc5f87a73fd814e2c9f629
+ENV DATABASE_URL=sqlite:///%kernel.project_dir%/var/data/blog.sqlite
+ENV MAILER_URL=null://localhost
+
+ADD ./ /var/www/html
+ADD ./deploy/vhost.conf /etc/nginx/conf.d/default.conf
+
+RUN chown -R www-data:www-data .
+
+USER www-data
+
+RUN composer install -n
+RUN ./bin/console cache:warmup

@@ -1,0 +1,4 @@
+FROM nginx
+
+ADD ./public /var/www/html/public
+ADD ./deploy/vhost.conf /etc/nginx/conf.d/default.conf

@@ -1,0 +1,9 @@
+version: '3'
+services:
+    php:
+        image: $IMAGE_PHP_PROD
+
+    nginx:
+        image: $IMAGE_NGINX_PROD
+        ports:
+            - "8000:80"

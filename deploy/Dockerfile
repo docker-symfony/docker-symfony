@@ -11,6 +11,9 @@ RUN apt-get update; \
 RUN pecl install xdebug-2.5.5 && docker-php-ext-enable xdebug
 #php-zip is required by composer to download compressed packages
 RUN docker-php-ext-install zip
+ARG UID=1000
+
+RUN usermod -u $UID www-data
 
 ADD install-composer.sh ./install-composer.sh
 RUN chmod +x ./install-composer.sh; \

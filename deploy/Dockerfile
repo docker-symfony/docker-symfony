@@ -17,6 +17,8 @@ RUN chmod +x ./install-composer.sh; \
     ./install-composer.sh; \
     mv ./composer.phar /usr/bin/composer
 
-RUN chown -R  www-data /var/www/html
+RUN chown -R  www-data:www-data /var/www/html
 
 USER www-data
+
+VOLUME /var/www/html

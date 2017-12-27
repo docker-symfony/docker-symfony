@@ -13,8 +13,8 @@ services:
   - docker
 
 script:
-  - cd deploy; docker-compose build --build-arg UID=$(id -u) php; cd -
-  - docker-compose -f deploy/docker-compose.yml up -d
-  - docker-compose -f deploy/docker-compose.yml exec php composer install
-  - docker-compose -f deploy/docker-compose.yml exec php ./bin/phpunit
+  - ./deploy/build.sh
+  - ./deploy/up.sh
+  - ./deploy/exec.sh composer install
+  - ./deploy/exec.sh ./bin/phpunit
   - docker-compose -f deploy/docker-compose.yml down

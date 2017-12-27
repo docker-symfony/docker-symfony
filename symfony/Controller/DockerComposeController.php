@@ -42,15 +42,40 @@ class DockerComposeController extends AbstractController
             foreach ($form->getData() as $service => $version) {
                 $this->builder->addService($service, $version);
             }
-            $response = new Response(print_r($this->builder->build(), true));
-            $dispositionHeader = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'docker-compose.yml');
-            $response->headers->set('Content-Disposition', $dispositionHeader);
-
-            return $response;
+            return $this->zipResponse();
         }
         return $this->render(
             'docker_compose/form.html.twig',
             ['form' => $form->createView()]
         );
+    }
+
+    /**
+     * @return Response
+     */
+    private function zipResponse(): Response
+    {
+        $zip = new \ZipArchive();
+        $filename = sprintf('/tmp/%s.zip', uniqid());
+        $zip->open($filename, \ZipArchive::CREATE);
+        foreach ($this->builder->build() as $path => $content) {
+            $zip->addFromString($path, $content);
+        }
+        $zip->close();
+
+        return $this->downloadResponse('deploy.zip', file_get_contents($filename));
+    }
+
+    /**
+     * @param $filename
+     * @return Response
+     */
+    private function downloadResponse($filename, $content): Response
+    {
+        $response = new Response($content);
+        $dispositionHeader = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
+        $response->headers->set('Content-Disposition', $dispositionHeader);
+
+        return $response;
     }
 }

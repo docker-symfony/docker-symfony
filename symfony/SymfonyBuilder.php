@@ -34,7 +34,7 @@ class SymfonyBuilder
     public function getSupportedServices()
     {
         return [
-            'PHP' => [
+            'php' => [
                 'versions' => [
                     '7.2' => 'php:fpm-7.2',
                     '7.1' => 'php:fpm-7.1',
@@ -42,13 +42,13 @@ class SymfonyBuilder
                     '5.6' => 'php:fpm-5.6',
                 ]
             ],
-            'Mysql' => [
+            'mysql' => [
                 'versions' => [
                     '5.7' => 'mysql:5.7',
-                    '5.6' => 'mysqk:5.6',
+                    '5.6' => 'mysql:5.6',
                 ]
             ],
-            'Web server' => [
+            'web server' => [
                 'Nginx' => [
                     'versions' => [
                         '1.13' => 'ngnix:1.13',

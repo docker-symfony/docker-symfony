@@ -8,20 +8,20 @@ use Symfony\Component\Yaml\Yaml;
 
 class DockerComposeBuilder
 {
-    const VERSION = '3';
 
-    private $version = self::VERSION;
-    /** @var ComposeService[] */
-    private $services = [];
-
-    public function generate(): string
+    /**
+     * @param ComposeService[] $services
+     * @param string $version
+     * @return string
+     */
+    public function build(array $services = [], $version = '3'): string
     {
         $compose = [
-            'version' => $this->version,
+            'version' => $version,
             'services' => []
         ];
 
-        $compose['services'] = $this->servicesAsArray();
+        $compose['services'] = $this->servicesAsArray($services);
 
         if (empty($compose['services'])) {
             unset($compose['services']);
@@ -31,32 +31,17 @@ class DockerComposeBuilder
     }
 
     /**
-     * @param string $version
-     * @return DockerComposeBuilder
-     */
-    public function setVersion(string $version): DockerComposeBuilder
-    {
-        $this->version = $version;
-        return $this;
-    }
-
-    public function addService(ComposeService $service)
-    {
-        $this->services[] = $service;
-        return $this;
-    }
-
-    /**
+     * @param ComposeService[] $services
      * @return array
      */
-    private function servicesAsArray(): array
+    private function servicesAsArray(array $services = []): array
     {
-        $services = [];
-        foreach ($this->services as $service) {
-            $services[$service->getName()] = [
+        $servicesArray = [];
+        foreach ($services as $service) {
+            $servicesArray[$service->getName()] = [
                 'image' => $service->getImage()
             ];
         }
-        return $services;
+        return $servicesArray;
     }
 }

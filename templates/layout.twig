@@ -1,0 +1,25 @@
+{% extends 'bootstrap_4_layout.html.twig' %}
+
+{% block form_row -%}
+    <div class="card">
+        <div class="card-body row">
+            <h4 class="card-title col">{{- form_label(form) -}}</h4>
+            <div class="col btn-group" role="group" data-toggle="buttons">
+                {{- form_widget(form) -}}
+                {{- form_errors(form) -}}
+            </div>
+        </div>
+    </div>
+{%- endblock form_row %}
+
+{%- block radio_widget -%}
+    <label class="btn btn-secondary {{ checked?'active' }}">
+        <input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+        {{ label }}
+    </label>
+{%- endblock radio_widget -%}
+
+{% block choice_widget_expanded -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' btn-group')|trim}) %}
+    {{- parent() -}}
+{%- endblock choice_widget_expanded %}

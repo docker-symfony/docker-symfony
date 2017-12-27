@@ -12,22 +12,26 @@ class DockerComposeBuilderTest extends TestCase
     {
         $generator = new DockerComposeBuilder();
 
-        $this->assertEquals(file_get_contents(__DIR__ . '/expected/empty.yml'), $generator->generate());
+        $this->assertEquals(file_get_contents(__DIR__ . '/expected/empty.yml'), $generator->build());
     }
 
     public function test_version()
     {
         $generator = new DockerComposeBuilder();
-        $generator->setVersion(1);
-        $this->assertEquals(file_get_contents(__DIR__ . '/expected/version.yml'), $generator->generate());
+        $this->assertEquals(
+            file_get_contents(__DIR__ . '/expected/version.yml'),
+            $generator->build([], '1')
+        );
     }
 
     public function test_service_image()
     {
         $generator = new DockerComposeBuilder();
-        $service = new ComposeService();
-        $service->setName('ubuntu')->setImage('ubuntu:xenial');
-        $generator->addService($service);
-        $this->assertEquals(file_get_contents(__DIR__ . '/expected/service.yml'), $generator->generate());
+        $service = new ComposeService('ubuntu', 'ubuntu:xenial');
+        $dockerCompose = $generator->build([$service]);
+        $this->assertEquals(
+            file_get_contents(__DIR__ . '/expected/service.yml'),
+            $dockerCompose
+        );
     }
 }

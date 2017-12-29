@@ -1,5 +1,6 @@
 # docker-symfony
 [![Build Status](https://travis-ci.org/docker-symfony/docker-symfony.svg?branch=master)](https://travis-ci.org/docker-symfony/docker-symfony)
+[![codecov](https://codecov.io/gh/docker-symfony/docker-symfony/branch/master/graph/badge.svg)](https://codecov.io/gh/docker-symfony/docker-symfony)
 
 # Contribution
 0. You need [Docker](https://www.docker.com/community-edition#/download) and [docker-compose](https://docs.docker.com/compose/install/)

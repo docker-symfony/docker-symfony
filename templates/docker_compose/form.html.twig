@@ -1,13 +1,41 @@
 {% extends'base.html.twig' %}
 
-{% form_theme form _self %}
+{% import 'docker_compose/form-macros.twig' as display %}
 
 {% block body %}
     <div class="row">
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
         <div class="col">
-            {{ form(form) }}
+            <form method="post">
+                {% for category in application.categories %}
+                    <div class="card">
+                        <div class="card-body row">
+                            <h4 class="card-title col">{{ category }}</h4>
+
+                            {% set services = application.getServicesByCategory(category) %}
+
+                            {% if services|length == 1 %}
+                                <input class="d-none" type="radio" name="services[{{ category }}][selected]"
+                                       value="{{ services|first.name }}"
+                                       checked="checked"/>
+                                {{ display.service(services|first, category) }}
+                            {% else %}
+                                {{ display.services(services, category) }}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary btn-lg btn-block mt-1">
+                    Download
+                </button>
+            </form>
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    $('.nav-item').click(function () {
+        $(this).find('input[type=radio]').prop("checked", true);
+    });
 {% endblock %}

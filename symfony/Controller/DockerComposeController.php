@@ -1,64 +1,60 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller;
 
-use App\SymfonyBuilder;
-use App\Form\DockerComposeType;
+use App\ApplicationDefinition;
+use DockerSymfony\Builder\ApplicationBuilder;
+use DockerSymfony\ComposeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class DockerComposeController extends AbstractController
 {
-    /** @var SymfonyBuilder */
+    /** @var ApplicationBuilder */
     private $builder;
+    /** @var ApplicationDefinition */
+    private $definition;
 
-    /**
-     * DockerComposeController constructor.
-     * @param SymfonyBuilder $builder
-     */
-    public function __construct(SymfonyBuilder $builder)
+    public function __construct(ApplicationBuilder $builder, ApplicationDefinition $definition)
     {
         $this->builder = $builder;
+        $this->definition = $definition;
     }
 
     /**
-     * @Route("/", name="docker-compose-form")
-     * @param Request $request
-     * @return Response
+     * @Route("/", name="docker-compose-form", methods={"get"})
      */
-    public function indexForm(Request $request): Response
+    public function showForm(): Response
     {
-        $form = $this->createForm(DockerComposeType::class);
-        $form->add('submit', SubmitType::class);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($form->getData() as $service => $version) {
-                $this->builder->addService($service, $version);
-            }
-            return $this->zipResponse();
-        }
         return $this->render(
             'docker_compose/form.html.twig',
-            ['form' => $form->createView()]
+            ['application' => $this->definition]
         );
     }
 
     /**
-     * @return Response
+     * @Route("/", name="docker-compose-form-post", methods={"post"})
      */
+    public function handleForm(Request $request): Response
+    {
+        foreach ($request->get('services') as $category => $services) {
+            $service = $services[$services['selected']];
+            $this->builder->addService(new ComposeService($service['name'], $service['version']));
+        }
+        return $this->zipResponse();
+    }
+
+
     private function zipResponse(): Response
     {
         $zip = new \ZipArchive();
         $filename = sprintf('/tmp/%s.zip', uniqid());
         $zip->open($filename, \ZipArchive::CREATE);
-        foreach ($this->builder->build() as $path => $content) {
+        foreach ($this->builder->generateFiles() as $path => $content) {
             $zip->addFromString($path, $content);
         }
         $zip->close();
@@ -66,10 +62,6 @@ class DockerComposeController extends AbstractController
         return $this->downloadResponse('deploy.zip', file_get_contents($filename));
     }
 
-    /**
-     * @param $filename
-     * @return Response
-     */
     private function downloadResponse($filename, $content): Response
     {
         $response = new Response($content);

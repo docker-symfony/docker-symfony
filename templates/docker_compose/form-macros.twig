@@ -1,0 +1,52 @@
+{% macro service(service, category) %}
+    <div class="col btn-group" role="group" data-toggle="buttons">
+        {% for version in service.versions %}
+            {% set namePrefix = "services[" ~ category ~ "][" ~ service.name ~"]" %}
+            <label class="btn btn-secondary {% if version.isDefault %}active{% endif %}">
+                <input type="radio" name="{{ namePrefix }}[version]"
+                       value="{{ version.version }}"
+                       {% if version.isDefault %}checked="checked"{% endif %}/>
+                <input type="hidden" name="{{ namePrefix }}[name]"
+                       value="{{ service.name }}">
+                {{ version.name }}
+            </label>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro services(services, category) %}
+    {% import _self as display %}
+    <div class="col">
+        <div class="row">
+            <div class="clearfix col">
+                <ul class="nav nav-pills" role="tablist">
+                    {% for service in services %}
+                        <li class="nav-item">
+                            <a class="nav-link {{ loop.first?"active" }}"
+                               id="pills-{{ service.name }}-tab" data-toggle="pill"
+                               href="#pills-{{ service.name }}"
+                               role="tab" aria-controls="pills-{{ service.name }}"
+                               aria-selected="{{ loop.first?true:false }}">
+                                <input name="services[{{ category }}][selected]" value="{{ service.name }}"
+                                       class="d-none" type="radio"
+                                       {% if loop.first %}checked="checked"{% endif %}/>
+                                {{ service.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="tab-content col">
+                {% for service in services %}
+                    <div class="tab-pane fade {{ loop.first?"show active" }}"
+                         id="pills-{{ service.name }}" role="tabpanel"
+                         aria-labelledby="pills-{{ service.name }}-tab">
+                        {{ display.service(service, category) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}

@@ -23,7 +23,6 @@ ARG UID=1000
 RUN usermod -u $UID www-data
 RUN chown -R  www-data:www-data /var/www
 
-
 USER www-data
 
 VOLUME /var/www/html

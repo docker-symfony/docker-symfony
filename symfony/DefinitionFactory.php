@@ -1,32 +1,10 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App;
 
-use DockerSymfony\Builder\ApplicationBuilder;
-use DockerSymfony\ComposeService;
-
 class DefinitionFactory
 {
-    /** @var ApplicationBuilder */
-    private $applicationBuilder;
-
-    public function __construct(ApplicationBuilder $applicationBuilder)
-    {
-        $this->applicationBuilder = $applicationBuilder;
-    }
-
-    public function addService($name, $version)
-    {
-        $this->applicationBuilder->addService(new ComposeService($name, $version));
-        return $this;
-    }
-
-    public function build()
-    {
-        return $this->applicationBuilder->generateFiles();
-    }
-
     public function createSymfony()
     {
         $categories = ['php', 'mysql', 'web server'];

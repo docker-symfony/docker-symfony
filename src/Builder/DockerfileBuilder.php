@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace DockerSymfony\Builder;
 
@@ -7,7 +7,7 @@ use DockerSymfony\ComposeService;
 
 class DockerfileBuilder
 {
-    public function build(ComposeService $service, array $extraCommands = [])
+    public function build(ComposeService $service, array $extraCommands = []): string
     {
         $commands = [
             sprintf('FROM %s', $service->getImage())

@@ -1,0 +1,4 @@
+version: '3'
+services:
+    service:
+        image: app-image

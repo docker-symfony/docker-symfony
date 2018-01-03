@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace DockerSymfony\Builder;
 
@@ -7,6 +7,8 @@ use DockerSymfony\ComposeService;
 
 class ApplicationBuilder
 {
+    /** @var string */
+    private $name;
     /** @var  DockerComposeBuilder */
     private $dockerComposeBuilder;
     /** @var DockerfileBuilder */
@@ -18,13 +20,9 @@ class ApplicationBuilder
     /** @var array */
     private $dockerfileCommands = [];
 
-    /**
-     * Application constructor.
-     * @param DockerComposeBuilder $dockerComposeBuilder
-     * @param DockerfileBuilder $dockerfileBuilder
-     */
-    public function __construct(DockerComposeBuilder $dockerComposeBuilder, DockerfileBuilder $dockerfileBuilder)
+    public function __construct(string $name, DockerComposeBuilder $dockerComposeBuilder, DockerfileBuilder $dockerfileBuilder)
     {
+        $this->name = $name;
         $this->dockerComposeBuilder = $dockerComposeBuilder;
         $this->dockerfileBuilder = $dockerfileBuilder;
     }
@@ -49,8 +47,14 @@ class ApplicationBuilder
 
     public function generateFiles()
     {
+        $services = array_map(function (ComposeService $thisService) {
+            return clone $thisService;
+        }, $this->services);
+
+        $services = array_map([$this, 'setCustomImageOnDockerfile'], $services);
+
         $files = $this->localFiles;
-        $files['docker-compose.yml'] = $this->dockerComposeBuilder->build($this->services);
+        $files['docker-compose.yml'] = $this->dockerComposeBuilder->build($services);
         $files = array_merge($files, $this->generateDockerfiles());
         return $files;
     }
@@ -64,5 +68,14 @@ class ApplicationBuilder
             $files[$filename] = $this->dockerfileBuilder->build($this->services[$service], $commands);
         }
         return $files;
+    }
+
+    private function setCustomImageOnDockerfile(ComposeService $service)
+    {
+        if (!empty($this->dockerfileCommands[$service->getName()])) {
+            $service->setImage(sprintf('%s-%s', $this->name, $service->getImage()));
+        }
+
+        return $service;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace DockerSymfony;
 
@@ -16,30 +16,24 @@ class ComposeService
     /** @var string */
     private $image = self::DEFAULT_IMAGE;
 
-    /**
-     * ComposeService constructor.
-     * @param string $name
-     * @param string $image
-     */
     public function __construct($name, $image = null)
     {
         $this->name = $name;
         $image && $this->image = $image;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
     public function getImage(): string
     {
         return $this->image;
+    }
+
+    public function setImage(string $image)
+    {
+        $this->image = $image;
     }
 }

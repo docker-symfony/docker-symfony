@@ -27,3 +27,6 @@ services:
     # please note that last definitions always *replace* previous ones
     DockerSymfony\Builder\:
         resource: '../src/Builder/*'
+
+    DockerSymfony\Builder\ApplicationBuilder:
+      arguments: ['symfony']

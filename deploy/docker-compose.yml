@@ -2,11 +2,12 @@ version: '3'
 services:
     php:
         build: .
+        hostname: 'php-docker-symfony'
         volumes:
             - '../:/var/www/html'
-
     nginx:
         image: nginx:latest
+        hostname: 'nginx-docker-symfony'
         ports:
             - "80:80"
         volumes:

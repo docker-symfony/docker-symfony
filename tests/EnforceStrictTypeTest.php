@@ -40,7 +40,7 @@ class EnforceStrictTypeTest extends TestCase
         $line = preg_split('/\n/', $code);
 
         $this->assertEquals(
-            'declare(strict_types=1);',
+            'declare(strict_types = 1);',
             $line[1],
             sprintf('"%s" does not declare strict types on first line', $filename)
         );

@@ -1,0 +1,16 @@
+namespace: tests\Functional\_support
+
+suites:
+    functional:
+        actor: FunctionalTester
+        path: .
+        modules:
+            enabled:
+                - PhpBrowser:
+                    url: http://nginx
+                - \Tests\Functional\_support\Helper\Functional
+paths:
+    tests: tests/Functional
+    output: tests/Functional/_output
+    data: tests/Functional/_data
+    support: tests/Functional/_support

@@ -17,6 +17,7 @@
         "symfony/yaml": "^4.0"
     },
     "require-dev": {
+        "codeception/codeception": "^2.3",
         "symfony/dotenv": "^4.0",
         "symfony/phpunit-bridge": "^4.0"
     },

@@ -17,7 +17,8 @@ script:
   - ./deploy/up.sh
   - ./deploy/exec.sh composer install
   - ./deploy/exec.sh ./bin/phpunit
-  
+  - ./deploy/exec.sh ./vendor/bin/codecept run
+
 after_script:
   - bash <(curl -s https://codecov.io/bash)
   - docker-compose -f deploy/docker-compose.yml down

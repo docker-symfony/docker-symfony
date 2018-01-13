@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-cd `dirname $0`; docker-compose build --build-arg UID=$(id -u) php; cd -
+user_id=${1:-$(id -u)}
+cd `dirname $0`; docker-compose build --build-arg UID=$user_id php; cd -

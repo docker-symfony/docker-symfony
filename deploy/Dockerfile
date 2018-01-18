@@ -1,6 +1,6 @@
 FROM php:7.1-fpm
 
-ADD .bashrc /var/www/.bashrc
+COPY .bashrc /var/www/.bashrc
 
 ENV PHP_IDE_CONFIG="serverName=DockerSymfony"
 
@@ -14,7 +14,7 @@ RUN docker-php-ext-install zip
 ADD xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 
-ADD install-composer.sh ./install-composer.sh
+COPY install-composer.sh ./install-composer.sh
 RUN chmod +x ./install-composer.sh; sync;\
     ./install-composer.sh; \
     mv ./composer.phar /usr/bin/composer
